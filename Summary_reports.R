@@ -1,86 +1,82 @@
-### install.packages ----
-install.packages("yaml")
-install.packages("shiny")
-install.packages("DT")
-#Read a JSON file
+#1. Install Packages-----
+#install.packages("jsonlite")
+#install.packages("yaml")
+#install.packages("shiny")
+#install.packages("shinyWidgets")
+#install.packages("DT")
+#install.packages("tibble")
+#install.packages("dplyr")
+install.packages("gridExtra")
+install.packages("grid")
 
-### Load the package required to read JSON files. ----
-##library(jsonlite)
+#2. Library R Packages -----
+library(shiny)
+library(shinyWidgets)
+library(jsonlite)
+library(yaml)
+library(tibble)
+library(dplyr)
+library(jsonlite)
+library(gridExtra)
+library(grid)
 
-library(rjson)
-library(yaml) 
-library(tidyverse)
-library(tidytext)
 
-### Read files ----
-##read file path from yaml
-##load data from json
-
+# Laden der Konfigurationsdatei
 config <- yaml.load_file("config.yaml")
 
-filenames <- list.files(paste0(getwd(),config$path), pattern = "*.json", full.names = TRUE) 
-json_files_list_all <- lapply(filenames, fromJSONfile <- function(x) rjson::fromJSON(file = x))
+# Liste aller JSON-Dateien im angegebenen Pfad
+filenames <- list.files(paste0(getwd(), config$path), pattern = "*.json", full.names = TRUE)
 
-#error and general omitted bcs of missing counts
-target_names <- c('Condition','Medication','MedicationAdministration','MedicationStatment','Procedure','Specimen')
+# Laden der JSON-Dateien
+json_files_list_all <- lapply(filenames, function(x) rjson::fromJSON(file = x))
 
-#### Problems with inserting the col-names "Diagnostics" -> not displayed when executing the script----
-get_diagnostics <- function(df, lable) {
+# ateinamen für den Vergleich 
+target_names <- c('Condition', 'Medication', 'MedicationAdministration', 'MedicationStatment', 'Procedure', 'Specimen')
+
+# Funktion zum Vergleich der Diagnosedaten
+compare_diagnostics <- function(df1, df2, label) {
+  comparison_result <- data.frame()
   
-  results_list <- list()
-
-  for(l in lable) { 
-    df_chunk <- df$validation[[l]]$issues
-    r <- do.call(rbind, as.list(lapply(df_chunk, get_text_count <- function(x) { cbind(x$diagnostics, x$count) } ))) 
-    r <- tibble(r)
-    colnames(r) <- c( paste("diagnostics_",l), "counts")
-    results_list <- append(results_list, r)
+  for (l in label) {
+    diagnostics_col <- paste0("diagnostics_", l)
+    counts_col <- "counts"
+    
+    # Vergleichen der ausgewählten Spalten zwischen df1 und df2
+    comparison <- df1[[diagnostics_col]] == df2[[diagnostics_col]]
+    
+    # Ergebnisse 
+    comparison_result <- cbind(comparison_result, comparison)
   }
+  
+  return(comparison_result)
+}
 
-  return(results_list)
+# Vergleichen der Diagnosedaten für jeweils zwei Dateien nebeneinander
+for (i in 1:(length(json_files_list_all) - 1)) {
+  dfHalle <- json_files_list_all[[i]]
+  dfLeipzig <- json_files_list_all[[i + 1]]
 }
 
 
-get_diagnostics_from_list <- function(ldf, lable) {
-   r <-  (lapply(ldf, call_diagnostics_with_lable <- function(x) {get_diagnostics(x,lable)} ))
-   return(r)
+
+# Überprüfen der Anzahl der Zeilen in beiden Dataframes
+if (nrow(dfHalle) != nrow(dfLeipzig)) {
+  stop("Die Dataframes haben unterschiedliche Anzahlen von Zeilen.")
 }
 
-diagnistics_counts_list_all <- get_diagnostics_from_list(json_files_list_all, target_names)
+# Zusammenfügen der Dataframes nebeneinander in einem neuen DataFrame
+combined_df <- cbind(dfHalle, dfLeipzig)
+combined_df
 
-df3 <- diagnistics_counts_list_all[[1]]
-df4 <- df3[[2]] #conditions hal
 
-#comparision in tibble
-testing_comparision <- tibble(df4)
-colnames(testing_comparision) <- c('text','count')
-
-testing_comparision$text
-
-#comparision based on length example
-testing_comparision <- df4[,1]
-length(testing_comparision)
-comp <- sapply(testing_comparision,testF <- function(x) {sapply(strsplit(x, " "), length)} )
-comp <- tibble(comp)
-
-#comparision based on length example
-testing_comparision <- df4[,1]
-length(testing_comparision)
-comp <- sapply(testing_comparision,testF <- function(x) {sapply(strsplit(x, " "), length)} )
-comp <- tibble(comp)
-
-#Add a new column to the tibble
-
-comp <- comp %>% 
-  mutate(lenght_values = length())
-
-length('asd asd asd asd')
-
-### testing ----
-
-ldf_chunk <- ldf[[2]]$validation$Condition$issues
-
-df <- do.call(rbind, as.list(sapply(ldf_chunk, testF <- function(x) x$diagnostics)))
+  
+  # Konvertiere die Dataframes in grobs
+  #grobHalle <- tableGrob(dfHalle)
+  #grobLeipzig <- tableGrob(dfLeipzig)
+  
+  # Zeige beide Dataframes nebeneinander an
+  #grid.arrange(grobHalle, grobLeipzig, ncol = 2)
+#}
 
 
 

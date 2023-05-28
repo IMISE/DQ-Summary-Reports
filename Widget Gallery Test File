@@ -1,0 +1,110 @@
+widget_data <- df4
+
+ui <- fluidPage(
+  titlePanel("Widget Gallery"),
+  sidebarLayout(
+    sidebarPanel(
+      div(class = "search-bar",
+          textInput(inputId = "search", label = NULL, placeholder = "Search")
+      )
+    ),
+    mainPanel(
+      tags$head(
+        tags$style(HTML("
+          .widget-button {
+            padding: 50px;
+            font-size: 24px;
+            background-color: #6FB7B7;
+            color: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+          }
+          .search-bar {
+            width: 200px;
+            height: 30px;
+            background-color: #F0F0F0;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+          }
+        "))
+      ),
+      fluidRow(
+        column(width = 6, class = "widget-button", actionButton(
+          inputId = "widget_Errorcode",
+          label = "Errorcode"
+        )),
+        column(width = 6, class = "widget-button", actionButton(
+          inputId = "widget_Häufigkeit",
+          label = "Häufigkeit"
+        )),
+        column(width = 6, class = "widget-button", "NA"),
+        column(width = 6, class = "widget-button", "NA"),
+        column(width = 6, class = "widget-button", "NA"),
+        column(width = 6, class = "widget-button", "NA")
+      )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  observeEvent(input$widget_Errorcode, {
+    showModal(
+      modalDialog(
+        title = "Errorcode",
+        withTags({
+          tags$head(
+            tags$style(HTML("
+              .error-box {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 5px;
+                padding: 15px;
+                margin-bottom: 10px;
+              }
+              .frequency-box {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 5px;
+                padding: 15px;
+              }
+            "))
+          )
+          lapply(seq_along(widget_data$Errorcode), function(i) {
+            fluidRow(
+              column(
+                width = 4,
+                div(
+                  class = "error-box",
+                  tags$h4(widget_data$Errorcode[i]),
+                  actionButton(inputId = paste0("button", i), label = "Select")
+                )
+              ),
+              column(
+                width = 8,
+                conditionalPanel(
+                  condition = paste0("input.button", i, " > 0"),
+                  div(
+                    class = "frequency-box",
+                    tags$h4("Frequency"),
+                    tags$p(widget_data$Häufigkeit[i])
+                  )
+                )
+              )
+            )
+          })
+        })
+      )
+    )
+  })
+  
+  observeEvent(input$button, {
+    updateActionButton(session, inputId = paste0("button", input$button), label = "Select")
+  })
+}
+
+shinyApp(ui, server)
+

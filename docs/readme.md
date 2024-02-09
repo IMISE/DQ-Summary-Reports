@@ -8,3 +8,7 @@ Input files are expected to be the .JSON FHIR Validator outputs as provided by t
 | col 3 is      | right-aligned | $1600 |
 | col 2 is      | centered      |   $12 |
 | zebra stripes | are neat      |    $1 |
+
+## links
+[a relative link](report.html)
+[absolute link](https://imise.github.io/DQ-Summary-Reports/report.html)

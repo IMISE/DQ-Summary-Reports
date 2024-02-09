@@ -10,5 +10,5 @@ Input files are expected to be the .JSON FHIR Validator outputs as provided by t
 | zebra stripes | are neat      |    $1 |
 
 ## links
-[a relative link](report.html)
-[absolute link](https://imise.github.io/DQ-Summary-Reports/report.html)
+[pointblank table scan example report](report.html)  
+[pointblank agent report](report_agent.html)  

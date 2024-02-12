@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DQ Summary Reports</title>
+</head>
+<body>
+    <h1>DQ Summary Reports</h1>
+    <p>
+        Welcome to the DQ Summary Reports page. 
+    </p>
+    <h2>Reports</h2>
+    <ul>
+        <li><a href="report.html">FHIR Validator Summary</a></li>
+        <li><a href="report_agent.html">Pointblank Agent Report</a></li>
+        <!-- Weitere Links hier hinzufügen, falls erforderlich -->
+    </ul>
+    <h2>Tools</h2>
+    <ul>
+        <li><a href="pointblank_table_scan_example_report.html">Pointblank Table Scan Example Report</a></li>
+    </ul>
+</body>
+</html>

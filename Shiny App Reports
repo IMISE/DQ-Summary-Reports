@@ -1,0 +1,223 @@
+#Libraries
+library(shiny)
+library(jsonlite)
+library(ggplot2)
+library(shinydashboard)
+
+# Histogram plot
+create_histogram_plot <- function(hist_data, colors, title) {
+  hist_df <- do.call(rbind, lapply(hist_data, function(h) {
+    data.frame(Category = as.character(h$Category$`@value`),
+               Count = as.numeric(h$Count$`@value`))
+  }))
+  
+  ggplot(hist_df, aes(x = Category, y = Count, fill = Category)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = colors) +
+    labs(title = title, x = "Category", y = "Count") +
+    theme_minimal()
+}
+
+# Line chart
+create_line_chart <- function(line_data, title) {
+  x_values <- as.numeric(line_data$X$`@value`)
+  y_values <- as.numeric(line_data$Y$`@value`)
+  
+  ggplot(data.frame(X = x_values, Y = y_values), aes(x = X, y = Y)) +
+    geom_line(color = "blue", size = 1) +
+    labs(title = title, x = "X", y = "Y") +
+    theme_minimal()
+}
+
+# Create boxplot
+create_boxplot <- function(hist_data, title) {
+  hist_df <- do.call(rbind, lapply(hist_data, function(h) {
+    data.frame(Category = as.character(h$Category$`@value`),
+               Count = as.numeric(h$Count$`@value`))
+  }))
+  
+  ggplot(hist_df, aes(x = Category, y = Count)) +
+    geom_boxplot() +
+    labs(title = title, x = "Category", y = "Count") +
+    theme_minimal()
+}
+
+# Statistical details
+extract_statistical_details <- function(json_data) {
+  if (!is.null(json_data$Histogram)) {
+    hist_data <- json_data$Histogram
+    values <- unlist(lapply(hist_data, function(h) as.numeric(h$Count$`@value`)))
+    stats <- data.frame(
+      Mean = mean(values, na.rm = TRUE),
+      Median = median(values, na.rm = TRUE),
+      SD = sd(values, na.rm = TRUE)
+    )
+    return(stats)
+  }
+  return(data.frame(Mean = NA, Median = NA, SD = NA))
+}
+
+# UI
+ui <- dashboardPage(
+  dashboardHeader(title = "DIZ Reports"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Upload Files", tabName = "uploads", icon = icon("file-upload")),
+      menuItem("Visualize Data", tabName = "visualize", icon = icon("chart-bar")),
+      menuItem("Statistical Details", tabName = "stats", icon = icon("info-circle")),
+      menuItem("Download Output", tabName = "download", icon = icon("download"))
+    )
+  ),
+  dashboardBody(
+    tabItems(
+      tabItem(tabName = "uploads",
+              fileInput("file1", label = "University Hospital Dresden Report:"),
+              fileInput("file2", label = "University Hospital Greifswald Report:"),
+              fileInput("file3", label = "University Hospital Leipzig Report:"),
+              selectInput("chart_type", label = "Chart Type:", choices = c("Histogram", "Line Chart", "Boxplot"))
+      ),
+      tabItem(tabName = "visualize",
+              uiOutput("plots_output")
+      ),
+      tabItem(tabName = "stats",
+              tableOutput("stats_output")
+      ),
+      tabItem(tabName = "download",
+              downloadButton("download_plots", "Download Plots"),
+              downloadButton("download_stats", "Download Statistical Data")
+      )
+    )
+  )
+)
+
+# Server
+server <- function(input, output) {
+  # Generate plots
+  all_plots <- reactive({
+    plots <- list()
+    for (i in 1:3) {
+      file <- input[[paste0("file", i)]]
+      if (!is.null(file) && file$name != "") {
+        json_data <- tryCatch(fromJSON(file = file$datapath), error = function(e) NULL)
+        if (!is.null(json_data)) {
+          if (input$chart_type == "Histogram") {
+            hist_data <- json_data$Histogram
+            if (!is.null(hist_data)) {
+              plot <- create_histogram_plot(hist_data, rainbow(10), paste("University Hospital", c("Dresden", "Greifswald", "Leipzig")[i]))
+              plots <- c(plots, list(plot))
+            } else {
+              plots <- c(plots, list(ggplot() + ggtitle("No Histogram data found")))
+            }
+          } else if (input$chart_type == "Line Chart") {
+            line_data <- json_data$LineChart
+            if (!is.null(line_data)) {
+              plot <- create_line_chart(line_data, paste("University Hospital", c("Dresden", "Greifswald", "Leipzig")[i]))
+              plots <- c(plots, list(plot))
+            } else {
+              plots <- c(plots, list(ggplot() + ggtitle("No Line Chart data found")))
+            }
+          } else if (input$chart_type == "Boxplot") {
+            hist_data <- json_data$Histogram
+            if (!is.null(hist_data)) {
+              plot <- create_boxplot(hist_data, paste("University Hospital", c("Dresden", "Greifswald", "Leipzig")[i]))
+              plots <- c(plots, list(plot))
+            } else {
+              plots <- c(plots, list(ggplot() + ggtitle("No Boxplot data found")))
+            }
+          }
+        } else {
+          plots <- c(plots, list(ggplot() + ggtitle("Invalid JSON data")))
+        }
+      }
+    }
+    plots
+  })
+  
+  # Generate statistical details
+  all_stats <- reactive({
+    stats_list <- list()
+    for (i in 1:3) {
+      file <- input[[paste0("file", i)]]
+      if (!is.null(file) && file$name != "") {
+        json_data <- tryCatch(fromJSON(file = file$datapath), error = function(e) NULL)
+        if (!is.null(json_data)) {
+          stats <- extract_statistical_details(json_data)
+          stats_list[[i]] <- cbind(Hospital = c("Dresden", "Greifswald", "Leipzig")[i], stats)
+        } else {
+          stats_list[[i]] <- data.frame(Hospital = c("Dresden", "Greifswald", "Leipzig")[i], Mean = NA, Median = NA, SD = NA)
+        }
+      }
+    }
+    do.call(rbind, stats_list)
+  })
+  
+  # Render the plots
+  output$plots_output <- renderUI({
+    plots <- all_plots()
+    if (length(plots) > 0) {
+      plot_ui_list <- lapply(1:length(plots), function(i) {
+        plot_output_id <- paste0("plot_", i)
+        checkbox_id <- paste0("checkbox_", i)
+        column(
+          width = 4,
+          plotOutput(plot_output_id),
+          checkboxInput(checkbox_id, label = paste("Show/Hide", c("Dresden", "Greifswald", "Leipzig")[i]), value = TRUE)
+        )
+      })
+      fluidRow(plot_ui_list)
+    } else {
+      tagList(
+        plot(1, type = "n", ann = FALSE),  # create an empty plot area
+        text(1, 1, "No data to display", cex = 1.5)  # display a message in the empty plot area
+      )
+    }
+  })
+  
+  # Render plots based on checkboxes
+  observe({
+    plots <- all_plots()
+    for (i in 1:length(plots)) {
+      local({
+        plot_output_id <- paste0("plot_", i)
+        checkbox_id <- paste0("checkbox_", i)
+        output[[plot_output_id]] <- renderPlot({
+          if (input[[checkbox_id]]) {
+            plots[[i]]
+          } else {
+            NULL
+          }
+        })
+      })
+    }
+  })
+  
+  # Render statistical details
+  output$stats_output <- renderTable({
+    all_stats()
+  })
+  
+  # Download for plots
+  output$download_plots <- downloadHandler(
+    filename = function() { paste("plots-", Sys.Date(), ".pdf", sep = "") },
+    content = function(file) {
+      plots <- all_plots()
+      pdf(file)
+      for (plot in plots) {
+        print(plot)
+      }
+      dev.off()
+    }
+  )
+  
+  # Download for statistical data
+  output$download_stats <- downloadHandler(
+    filename = function() { paste("stats-", Sys.Date(), ".csv", sep = "") },
+    content = function(file) {
+      stats <- all_stats()
+      write.csv(stats, file, row.names = FALSE)
+    }
+  )
+}
+
+# Run the app
+shinyApp(ui = ui, server = server)

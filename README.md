@@ -15,7 +15,7 @@ To run this app locally, ensure you have the following R packages installed:
 
 Install these packages using `install.packages(c("shiny", "jsonlite", "ggplot2", "shinydashboard", "shinyFiles", "shinyjqui", "dplyr"))` in R if they are not already installed.
 
-#Usage
+# Usage
 
 Start Page: Choose JSON files to upload and view information about the uploaded files.
 Visualization: Visualize up to six histograms and arrange them as needed.
@@ -23,7 +23,7 @@ Combined Histogram: Combine selected histograms into a single combined histogram
 Statistics: Display statistical information about the uploaded data.
 
 
-#License
+# License
 ...
 
 

@@ -1,0 +1,175 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "schema": "http://schema.org/",
+    "oslc": "http://open-services.net/ns/core#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "rdfs:label": {
+      "@type": "xsd:string"
+    },
+    "schema:isBasedOn": {
+      "@type": "@id"
+    },
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:derivedFrom": {
+      "@type": "@id"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    },
+    "skos:notation": {
+      "@type": "xsd:string"
+    },
+    "Histogram": "https://schema.metadatacenter.org/properties/a7dd3d72-bc73-4963-af9b-a4ab510c8dbc",
+    "Contributor": "https://schema.metadatacenter.org/properties/53ad358a-0792-4b52-b988-9f2283479a91"
+  },
+  "Histogram": [
+    {
+      "@context": {
+        "Category": "https://schema.metadatacenter.org/properties/dcd04637-c386-499b-b33c-0b3d9918fa14",
+        "Count": "https://schema.metadatacenter.org/properties/95bc1e0d-b4c7-47ff-a23a-6102d851a709"
+      },
+      "Category": {
+        "@value": "Male"
+      },
+      "Count": {
+        "@value": "130",
+        "@type": "xsd:decimal"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/56c325d9-83c0-4fc4-94d0-1fcf55412f87"
+    },
+    {
+      "@context": {
+        "Category": "https://schema.metadatacenter.org/properties/dcd04637-c386-499b-b33c-0b3d9918fa14",
+        "Count": "https://schema.metadatacenter.org/properties/95bc1e0d-b4c7-47ff-a23a-6102d851a709"
+      },
+      "Category": {
+        "@value": "Female"
+      },
+      "Count": {
+        "@value": "60",
+        "@type": "xsd:decimal"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/67a28343-e425-471e-a4a2-e68d59616172"
+    },
+    {
+      "@context": {
+        "Category": "https://schema.metadatacenter.org/properties/dcd04637-c386-499b-b33c-0b3d9918fa14",
+        "Count": "https://schema.metadatacenter.org/properties/95bc1e0d-b4c7-47ff-a23a-6102d851a709"
+      },
+      "Category": {
+        "@value": "Other"
+      },
+      "Count": {
+        "@value": "10",
+        "@type": "xsd:decimal"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/40da480f-069b-41ee-bf53-fcc058e0b39c"
+    },
+    {
+      "@context": {
+        "Category": "https://schema.metadatacenter.org/properties/dcd04637-c386-499b-b33c-0b3d9918fa14",
+        "Count": "https://schema.metadatacenter.org/properties/95bc1e0d-b4c7-47ff-a23a-6102d851a709"
+      },
+      "Category": {
+        "@value": "Unknown"
+      },
+      "Count": {
+        "@value": "5",
+        "@type": "xsd:decimal"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/2e5eab49-f396-42a9-9f61-1453d830064f"
+    }
+  ],
+  "Contributor": {
+    "@context": {
+      "contributorType": "http://vocab.fairdatacollective.org/gdmt/hasContributorType",
+      "contributorEmail": "http://xmlns.com/foaf/0.1/mbox",
+      "contributorRole": "http://vocab.fairdatacollective.org/gdmt/hasContributorRole",
+      "ContributorName": "http://vocab.fairdatacollective.org/gdmt/hasContributorNameInfo",
+      "ContributorIdentifier": "http://vocab.fairdatacollective.org/gdmt/hasContributorIdentifierInfo",
+      "ContributorAffiliation": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliationInfo"
+    },
+    "contributorType": {},
+    "contributorEmail": [
+      {
+        "@value": null
+      }
+    ],
+    "contributorRole": [
+      {}
+    ],
+    "ContributorName": {
+      "@context": {
+        "contributorName": "http://purl.org/dc/terms/contributor",
+        "contributorGivenName": "http://xmlns.com/foaf/0.1/givenName",
+        "contributorFamilyName": "http://xmlns.com/foaf/0.1/familyName"
+      },
+      "contributorName": {
+        "@value": null
+      },
+      "contributorGivenName": [
+        {
+          "@value": null
+        }
+      ],
+      "contributorFamilyName": [
+        {
+          "@value": null
+        }
+      ],
+      "@id": "https://repo.metadatacenter.org/template-element-instances/014577f7-b7c8-4d95-aef7-c107d7720306"
+    },
+    "ContributorIdentifier": {
+      "@context": {
+        "contributorIdentifier": "http://vocab.fairdatacollective.org/gdmt/hasContributorIdentifier",
+        "contributorIdentifierScheme": "http://vocab.fairdatacollective.org/gdmt/hasContributorIdentifierScheme"
+      },
+      "contributorIdentifier": {
+        "@value": null
+      },
+      "contributorIdentifierScheme": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/12d20629-6514-485f-9b46-2de118354418"
+    },
+    "ContributorAffiliation": {
+      "@context": {
+        "contributorAffiliation": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliation",
+        "contributorAffiliationIdentifier": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliationIdentifier",
+        "contributorAffiliationIdentifierScheme": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliationIdentifierScheme"
+      },
+      "contributorAffiliation": {
+        "@value": null
+      },
+      "contributorAffiliationIdentifier": {
+        "@value": null
+      },
+      "contributorAffiliationIdentifierScheme": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/eed1e428-37c4-4302-9224-d0606ed7ac6e"
+    },
+    "@id": "https://repo.metadatacenter.org/template-element-instances/6452a330-34b0-420c-8883-5c656f236de2"
+  },
+  "schema:isBasedOn": "https://repo.metadatacenter.org/templates/1b4c3814-fdfe-4a02-afd1-1aa84c010961",
+  "schema:name": "Histogram-Test metadata",
+  "schema:description": "",
+  "pav:createdOn": "2024-02-29T03:14:21-08:00",
+  "pav:createdBy": "https://metadatacenter.org/users/6f0f8e60-ceb0-407e-bef2-989317f78118",
+  "pav:lastUpdatedOn": "2024-02-29T03:14:21-08:00",
+  "oslc:modifiedBy": "https://metadatacenter.org/users/6f0f8e60-ceb0-407e-bef2-989317f78118",
+  "@id": "https://repo.metadatacenter.org/template-instances/4112ee13-3e00-41b1-b894-685475f3ffac"
+}
